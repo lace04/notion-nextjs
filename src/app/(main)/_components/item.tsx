@@ -1,6 +1,6 @@
 'use client';
 
-import { ChevronDown, ChevronRight, LucideIcon } from 'lucide-react';
+import { ChevronDown, ChevronRight, LucideIcon, Plus } from 'lucide-react';
 import { Id } from '../../../../convex/_generated/dataModel';
 import { useUser } from '@clerk/clerk-react';
 import { useRouter } from 'next/navigation';
@@ -8,6 +8,8 @@ import { useMutation } from 'convex/react';
 import { api } from '../../../../convex/_generated/api';
 import { cn } from '@/lib/utils';
 import { useEffect, useState } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
+import { toast } from 'sonner';
 
 interface ItemProps {
   id?: Id<'documents'>;
@@ -40,7 +42,34 @@ export const Item = ({
   // const archive = useMutation(api.documents.archive);
   const ChevronIcon = expanded ? ChevronDown : ChevronRight;
 
-  const isMac = window.navigator.userAgent.toUpperCase().indexOf('MAC') >= 0;
+  const handleExpand = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
+    event.stopPropagation();
+    onExpand?.(); // Esto es para que no se cierre el menu al hacer click en el icono de expandir
+  };
+
+  const onCreate = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    event.stopPropagation();
+    if (!id) return;
+    const promise = create({ title: 'Untitled', parentDocument: id }).then(
+      (documentId) => {
+        if (!expanded) {
+          onExpand?.();
+        }
+        router.push(`/documents/${documentId}`);
+      }
+    );
+
+    toast.promise(promise, {
+      loading: 'Creating a new note...',
+      success: 'New note created!',
+      error: 'Failed to create a new note.',
+    });
+  };
+
+  // const isMac = window.navigator.userAgent.toUpperCase().indexOf('MAC') >= 0;
+  const isMac = window.navigator.userAgent.includes('Macintosh');
 
   return (
     <div
@@ -56,7 +85,7 @@ export const Item = ({
         <div
           role='button'
           className='h-full rounded-sm hover: bg-neutral-300 dark:bg-neutral-600 mr-1'
-          onClick={() => {}}
+          onClick={handleExpand}
         >
           <ChevronIcon className='h-4 w-4 shrink-0 text-muted-foreground/50' />
         </div>
@@ -72,6 +101,29 @@ export const Item = ({
           <span className='text-xs'>{isMac ? '⌘' : 'ctrl'}</span> + k
         </kbd>
       )}
+      {!!id && (
+        <div className='ml-auto flex items-center gap-x-2'>
+          <div
+            role='button'
+            onClick={onCreate}
+            className='opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600'
+          >
+            <Plus className='h-4 w-4 text-muted-foreground' />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+Item.Skeleton = function ItemSkeleton({ level }: { level?: number }) {
+  return (
+    <div
+      style={{ paddingLeft: level ? `${level * 12 + 25}px` : '12px' }}
+      className='flex gap-x-2 py-[3px]'
+    >
+      <Skeleton className='h-4 w-4' />
+      <Skeleton className='h-4 w-[30%]' />
     </div>
   );
 };
