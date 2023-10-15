@@ -6,7 +6,7 @@ import {
   LucideIcon,
   MoreHorizontal,
   Plus,
-  Trash2,
+  Trash,
 } from 'lucide-react';
 import { Id } from '../../../../convex/_generated/dataModel';
 import { useUser } from '@clerk/clerk-react';
@@ -145,7 +145,7 @@ export const Item = ({
               forceMount
             >
               <DropdownMenuItem onClick={onArchive}>
-                <Trash2 className='h-4 w-4 mr-2' />
+                <Trash className='h-4 w-4 mr-2' />
                 Delete
               </DropdownMenuItem>
               <DropdownMenuSeparator />
