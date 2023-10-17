@@ -13,3 +13,4 @@ export const useSearch = create<SearchStore>((set, get) => ({
   onClose: () => set({ isOpen: false }),
   toggle: () => set({ isOpen: !get().isOpen }),
 }));
+
