@@ -4,9 +4,11 @@ import { cn } from '@/lib/utils';
 import {
   ChevronsLeft,
   MenuIcon,
+  Plus,
   PlusCircle,
   Search,
   Settings,
+  Trash2,
 } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { ElementRef, useEffect, useRef, useState } from 'react';
@@ -17,6 +19,13 @@ import { api } from '../../../../convex/_generated/api';
 import { Item } from './item';
 import { toast } from 'sonner';
 import { DocumentList } from './document-list';
+
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from '@/components/ui/popover';
+import { TrashBox } from './trash-box-';
 
 export const Navigation = () => {
   const pathname = usePathname();
@@ -82,7 +91,7 @@ export const Navigation = () => {
       setIsCollapsed(false);
       setIsResetting(true);
 
-      sidebarRef.current.style.width = isMobile ? '100%' : '240px';
+      sidebarRef.current.style.width = isMobile ? '50%' : '240px';
       navbarRef.current.style.setProperty(
         'width',
         isMobile ? '0' : 'calc(100% - 240px)'
@@ -104,13 +113,13 @@ export const Navigation = () => {
     }
   };
 
-  const handleCreate = async () => {
+  const handleCreate = () => {
     const promise = create({ title: 'Untitled' });
 
     toast.promise(promise, {
       loading: 'Creating a new note...',
-      success: 'Note created!',
-      error: 'Failed to create note',
+      success: 'New note created!',
+      error: 'Failed to create a new note.',
     });
   };
 
@@ -134,14 +143,26 @@ export const Navigation = () => {
         >
           <ChevronsLeft className='h-6 w-6' />
         </div>
-        <div className=''>
+        <div>
           <UserItem />
-          <Item isSearch onClick={() => {}} label='Search' icon={Search} />
-          <Item onClick={() => {}} label='Settings' icon={Settings} />
-          <Item onClick={handleCreate} label='New Page' icon={PlusCircle} />
+          <Item label='Search' icon={Search} isSearch onClick={() => {}} />
+          <Item label='Settings' icon={Settings} onClick={() => {}} />
+          <Item onClick={handleCreate} label='New page' icon={PlusCircle} />
         </div>
         <div className='mt-4'>
           <DocumentList />
+          <Item onClick={handleCreate} icon={Plus} label='Add a page' />
+          <Popover>
+            <PopoverTrigger className='w-full mt-4'>
+              <Item label='Trash' icon={Trash2} />
+            </PopoverTrigger>
+            <PopoverContent
+              className='p-0 w-72'
+              side={isMobile ? 'bottom' : 'right'}
+            >
+              <TrashBox />
+            </PopoverContent>
+          </Popover>
         </div>
         <div
           onMouseDown={handleMouseDown}
