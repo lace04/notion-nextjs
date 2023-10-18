@@ -2,11 +2,11 @@
 
 import { useState } from 'react';
 import { useMutation } from 'convex/react';
-import { toast } from 'sonner';
 import { Check, Copy, Globe } from 'lucide-react';
+import { toast } from 'sonner';
 
-import { Doc } from '../../../../convex/_generated/dataModel';
 import { api } from '../../../../convex/_generated/api';
+import { Doc } from '../../../../convex/_generated/dataModel';
 import {
   PopoverTrigger,
   Popover,
@@ -105,10 +105,10 @@ export const Publish = ({ initialData }: PublishProps) => {
               </Button>
             </div>
             <Button
-              size='sm'
               className='w-full text-xs'
               disabled={isSubmitting}
               onClick={onUnpublish}
+              size='sm'
             >
               Unpublish
             </Button>
